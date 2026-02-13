@@ -1,4 +1,8 @@
+# AI / Agent
+.agent
+.gemini
 # Check for existing .gitignore in subdirectories
+
 # Node
 node_modules
 dist
