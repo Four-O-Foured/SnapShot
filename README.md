@@ -45,8 +45,8 @@ SnapShot is a modern, AI-powered note-taking application designed to streamline 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/Four-O-Foured/SnapShot.git
-   cd SnapShot
+   git clone https://github.com/Four-O-Foured/SnapNotes.git
+   cd SnapNotes
    ```
 
 2. **Frontend Setup**
