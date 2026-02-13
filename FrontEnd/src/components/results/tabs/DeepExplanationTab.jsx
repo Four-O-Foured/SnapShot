@@ -1,50 +1,53 @@
+import { useSelector } from "react-redux";
+
 const DeepExplanationTab = () => {
+  const { currentSnapNote } = useSelector((state) => state.snapNotes);
+
+  const title = currentSnapNote?.lesson_title || "Deep Explanation";
+  const explanations = currentSnapNote?.step_by_step_explanation || [];
+
+  if (explanations.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-snap-text-muted">No explanations available for this section.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="glass-card p-8 space-y-6 opacity-0 animate-fade-in" style={{ animationFillMode: 'forwards' }}>
       <div className="space-y-4">
-        <h3 className="text-h3 text-snap-text-primary">Understanding Machine Learning</h3>
-        
-        <p className="text-body text-snap-text-secondary leading-relaxed">
-          Machine learning represents a fundamental shift in how we approach problem-solving with computers. 
-          Instead of explicitly programming rules, we allow algorithms to{" "}
-          <span className="text-snap-cyan font-medium">learn patterns from data</span>.
-        </p>
+        <h3 className="text-h3 text-snap-text-primary">{title}</h3>
 
         <p className="text-body text-snap-text-secondary leading-relaxed">
-          This paradigm is particularly powerful because it can handle{" "}
-          <span className="text-snap-cyan font-medium">complex, high-dimensional problems</span>{" "}
-          that would be nearly impossible to solve with traditional programming approaches.
+          This detailed breakdown provides a step-by-step understanding of the core concepts covered in your materials.
         </p>
       </div>
 
       <div className="space-y-4">
-        <h4 className="text-body font-semibold text-snap-text-primary">The Learning Process</h4>
-        
-        <p className="text-body text-snap-text-secondary leading-relaxed">
-          At its core, machine learning involves three key steps:
-        </p>
+        <h4 className="text-body font-semibold text-snap-text-primary">The Process Breakdown</h4>
 
-        <ul className="space-y-3">
-          {[
-            "Data Collection: Gathering relevant, high-quality training examples",
-            "Model Training: Adjusting parameters to minimize prediction errors",
-            "Evaluation: Testing the model on unseen data to measure performance"
-          ].map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-small text-snap-text-secondary">
-              <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-primary text-[12px] font-semibold">{i + 1}</span>
+        <ul className="space-y-4">
+          {explanations.map((item, i) => (
+            <li key={i} className="flex items-start gap-3 text-body text-snap-text-secondary leading-relaxed">
+              <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-primary text-sm font-bold">{i + 1}</span>
               </span>
-              {item}
+              <div className="pt-1">
+                {item}
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="p-4 rounded-xl bg-snap-bg-panel border border-border/50">
-        <p className="text-small text-snap-text-muted italic">
-          💡 <span className="text-snap-gold">Key Insight:</span> The quality of your training data often matters more than the complexity of your algorithm.
-        </p>
-      </div>
+      {currentSnapNote?.diagram_explanations?.length > 0 && (
+        <div className="p-4 rounded-xl bg-snap-bg-panel border border-border/50">
+          <p className="text-small text-snap-text-muted italic">
+            💡 <span className="text-snap-gold font-bold">Additional Context:</span> {currentSnapNote.diagram_explanations[0]}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

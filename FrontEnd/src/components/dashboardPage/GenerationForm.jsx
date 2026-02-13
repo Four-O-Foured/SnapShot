@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Upload, Image, X, Loader2, Send, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import RHFFileDrop from "@/components/layout/RHFFileDrop";
 import { showToast } from "@/lib/toast";
 import { useCreateSnapNote } from "../../hooks/useSnapNotes";
+import { useDispatch } from "react-redux";
+import { clearCurrentSnapNote } from "../../store/slices/snapNotesSlice";
+
 
 const GenerationForm = () => {
     const { control, handleSubmit, watch, setValue, reset } = useForm({
@@ -15,6 +18,7 @@ const GenerationForm = () => {
             userPreference: ""
         }
     });
+    const dispatch = useDispatch();
     const { mutate, isPending } = useCreateSnapNote();
 
     const file = watch("file");
@@ -34,6 +38,10 @@ const GenerationForm = () => {
         adjustHeight();
     }, [userPreference]);
 
+    useEffect(() => {
+        dispatch(clearCurrentSnapNote());
+    }, []);
+
     const handleFormSubmit = (data) => {
         if (!data.file) {
             showToast.error("Please upload a file to start generating.");
@@ -43,7 +51,7 @@ const GenerationForm = () => {
         if (!isPending) {
             console.log(data);
             mutate(data);
-
+            reset();
         }
     };
 

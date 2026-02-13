@@ -16,7 +16,7 @@ export const navItems = [
     },
     {
         label: 'My SnapNotes',
-        to: '/dashboard/notes',
+        to: '/dashboard/snapnotes',
         icon: Brain,
         rotation: 6,
         offset: 20,

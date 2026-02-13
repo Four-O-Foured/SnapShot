@@ -54,8 +54,12 @@ SnapNotes is a modern, AI-powered note-taking application designed to streamline
    ```bash
    cd FrontEnd
    npm install
+   or
+   pnpm install
    # Create a .env file based on your configuration
    npm run dev
+   or
+   pnpm dev
    ```
 
 3. **Backend Setup**

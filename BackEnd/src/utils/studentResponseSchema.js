@@ -27,7 +27,7 @@ export const SnapNotesResponseSchema = z.object({
 
   step_by_step_explanation: z.array(z.string()).min(5),
 
-  flashcards: z.array(FlashcardSchema).min(6).max(7),
+  flashcards: z.array(FlashcardSchema).min(6).max(8),
 
   exam_questions: z
     .array(ExamQASchema)

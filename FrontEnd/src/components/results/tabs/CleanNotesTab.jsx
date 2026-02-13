@@ -1,28 +1,13 @@
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-
-const sampleNotes = [
-  {
-    id: 1,
-    title: "Introduction to Machine Learning",
-    content: "Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed. It focuses on developing algorithms that can access data and use it to learn for themselves.",
-  },
-  {
-    id: 2,
-    title: "Types of Machine Learning",
-    content: "There are three main types: Supervised Learning (using labeled data), Unsupervised Learning (finding patterns in unlabeled data), and Reinforcement Learning (learning through trial and error with rewards).",
-  },
-  {
-    id: 3,
-    title: "Key Concepts",
-    content: "Training Data: The dataset used to train the model. Features: Input variables used to make predictions. Labels: Output variables in supervised learning. Model: The mathematical representation learned from data.",
-  },
-];
+import { useSelector } from "react-redux";
 
 const CleanNotesTab = () => {
+  const { currentSnapNote } = useSelector((state) => state.snapNotes);
   const [copiedId, setCopiedId] = useState(null);
+
+  const notes = currentSnapNote?.clean_notes || [];
 
   const handleCopy = (id, content) => {
     navigator.clipboard.writeText(content);
@@ -50,6 +35,14 @@ const CleanNotesTab = () => {
     },
   };
 
+  if (notes.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-snap-text-muted">No notes available for this section.</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="space-y-4"
@@ -57,26 +50,30 @@ const CleanNotesTab = () => {
       initial="hidden"
       animate="visible"
     >
-      {sampleNotes.map((note) => (
+      {notes.map((content, index) => (
         <motion.div
-          key={note.id}
+          key={index}
           className="glass-card p-6 group hover:border-primary/30 transition-all duration-300 hover-lift cursor-pointer"
           variants={itemVariants}
           whileHover={{ scale: 1.01 }}
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <h3 className="text-body font-semibold text-snap-text-primary mb-2 group-hover:text-primary transition-colors">{note.title}</h3>
-              <p className="text-small text-snap-text-secondary leading-relaxed group-hover:text-snap-text-secondary transition-colors">{note.content}</p>
+              <h3 className="text-body font-semibold text-snap-text-primary mb-2 group-hover:text-primary transition-colors">
+                Section {index + 1}
+              </h3>
+              <p className="text-small text-snap-text-secondary leading-relaxed group-hover:text-snap-text-secondary transition-colors">
+                {content}
+              </p>
             </div>
             <motion.button
-              onClick={() => handleCopy(note.id, note.content)}
+              onClick={() => handleCopy(index, content)}
               className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-lg hover:bg-snap-bg-panel shrink-0"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
               <AnimatePresence mode="wait">
-                {copiedId === note.id ? (
+                {copiedId === index ? (
                   <motion.div
                     key="check"
                     initial={{ opacity: 0, scale: 0.5 }}

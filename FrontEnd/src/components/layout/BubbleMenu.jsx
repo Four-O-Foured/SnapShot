@@ -2,48 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
 
-const DEFAULT_ITEMS = [
-    {
-        label: 'home',
-        to: '/',
-        ariaLabel: 'Home',
-        rotation: -12,
-        offset: -10,
-        hoverStyles: { bgColor: 'hsl(var(--snap-cyan))', textColor: 'hsl(var(--snap-bg-main))', glowColor: 'hsla(var(--snap-cyan), 0.4)' }
-    },
-    {
-        label: 'about',
-        to: '#',
-        ariaLabel: 'About',
-        rotation: 6,
-        offset: 15,
-        hoverStyles: { bgColor: 'hsl(var(--snap-mint))', textColor: 'hsl(var(--snap-bg-main))', glowColor: 'hsla(var(--snap-mint), 0.4)' }
-    },
-    {
-        label: 'projects',
-        to: '#',
-        ariaLabel: 'Documentation',
-        rotation: 14,
-        offset: -20,
-        hoverStyles: { bgColor: 'hsl(var(--snap-gold))', textColor: 'hsl(var(--snap-bg-main))', glowColor: 'hsla(var(--snap-gold), 0.4)' }
-    },
-    {
-        label: 'blog',
-        to: '#',
-        ariaLabel: 'Blog',
-        rotation: -5,
-        offset: 10,
-        hoverStyles: { bgColor: 'hsl(var(--snap-coral))', textColor: 'hsl(var(--snap-bg-main))', glowColor: 'hsla(var(--snap-coral), 0.4)' }
-    },
-    {
-        label: 'contact',
-        to: '#',
-        ariaLabel: 'Contact',
-        rotation: 18,
-        offset: -5,
-        hoverStyles: { bgColor: 'hsl(var(--snap-gradient-start))', textColor: '#ffffff', glowColor: 'hsla(var(--snap-gradient-start), 0.5)' }
-    }
-];
+const MotionLink = motion(Link);
 
 export default function BubbleMenu({
     logo,
@@ -60,7 +19,7 @@ export default function BubbleMenu({
     staggerDelay = 0.12
 }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const menuItems = items?.length ? items : DEFAULT_ITEMS;
+    const menuItems = items?.length ? items : null;
     const [isDesktop, setIsDesktop] = useState(false);
 
     useEffect(() => {
@@ -302,8 +261,7 @@ export default function BubbleMenu({
                                     key={idx}
                                     className="pill-col flex justify-center items-stretch flex-[0_0_50%] md:flex-[0_0_calc(100%/3)] px-2 md:px-4"
                                 >
-                                    <motion.a
-                                        as={Link}
+                                    <MotionLink
                                         role="menuitem"
                                         to={item.to || item.href}
                                         aria-label={item.ariaLabel || item.label}
@@ -340,7 +298,7 @@ export default function BubbleMenu({
                                         >
                                             {item.label}
                                         </motion.span>
-                                    </motion.a>
+                                    </MotionLink>
                                 </li>
                             ))}
                         </motion.ul>

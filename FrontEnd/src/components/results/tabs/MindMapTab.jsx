@@ -1,100 +1,66 @@
+import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
+import { Network, ArrowRight } from "lucide-react";
+
 const MindMapTab = () => {
-  const nodes = [
-    { id: "center", label: "Machine Learning", x: 50, y: 50 },
-    { id: "supervised", label: "Supervised", x: 20, y: 25 },
-    { id: "unsupervised", label: "Unsupervised", x: 80, y: 25 },
-    { id: "reinforcement", label: "Reinforcement", x: 50, y: 15 },
-    { id: "regression", label: "Regression", x: 10, y: 45 },
-    { id: "classification", label: "Classification", x: 25, y: 55 },
-    { id: "clustering", label: "Clustering", x: 75, y: 45 },
-    { id: "dimensionality", label: "Dim. Reduction", x: 90, y: 55 },
-    { id: "qlearning", label: "Q-Learning", x: 40, y: 5 },
-    { id: "policy", label: "Policy Gradient", x: 60, y: 5 },
-  ];
+  const { currentSnapNote } = useSelector((state) => state.snapNotes);
+  const mindMap = currentSnapNote?.mind_map;
 
-  const connections = [
-    { from: "center", to: "supervised" },
-    { from: "center", to: "unsupervised" },
-    { from: "center", to: "reinforcement" },
-    { from: "supervised", to: "regression" },
-    { from: "supervised", to: "classification" },
-    { from: "unsupervised", to: "clustering" },
-    { from: "unsupervised", to: "dimensionality" },
-    { from: "reinforcement", to: "qlearning" },
-    { from: "reinforcement", to: "policy" },
-  ];
-
-  const getNodePosition = (id) => {
-    const node = nodes.find((n) => n.id === id);
-    return node ? { x: node.x, y: node.y } : { x: 50, y: 50 };
-  };
+  if (!mindMap) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-snap-text-muted">No mind map data available.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="glass-card p-6 opacity-0 animate-fade-in" style={{ animationFillMode: 'forwards' }}>
-      <div className="aspect-16/10 relative">
-        <svg className="w-full h-full" viewBox="0 0 100 70">
-          {/* Connections */}
-          {connections.map((conn, i) => {
-            const from = getNodePosition(conn.from);
-            const to = getNodePosition(conn.to);
-            return (
-              <line
-                key={i}
-                x1={from.x}
-                y1={from.y}
-                x2={to.x}
-                y2={to.y}
-                stroke="url(#lineGradient)"
-                strokeWidth="0.3"
-                className="opacity-40"
-              />
-            );
-          })}
+    <div className="glass-card p-8 space-y-12 opacity-0 animate-fade-in" style={{ animationFillMode: 'forwards' }}>
+      {/* Tree View Style Mind Map */}
+      <div className="flex flex-col items-center">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="px-8 py-4 rounded-2xl bg-primary/20 border-2 border-primary/40 text-snap-text-primary font-bold text-xl md:text-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.2)] mb-16 text-center"
+        >
+          {mindMap.main_topic}
+        </motion.div>
 
-          {/* Gradient Definition */}
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(252, 100%, 69%)" />
-              <stop offset="100%" stopColor="hsl(195, 100%, 67%)" />
-            </linearGradient>
-          </defs>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+          {mindMap.branches.map((branch, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="relative"
+            >
+              <div className="flex flex-col h-full bg-snap-bg-panel/40 border border-white/10 rounded-2xl p-6 group hover:border-primary/30 transition-all duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-snap-cyan/10 flex items-center justify-center">
+                    <Network className="w-5 h-5 text-snap-cyan" />
+                  </div>
+                  <h4 className="font-bold text-lg text-snap-text-primary">{branch.topic}</h4>
+                </div>
 
-          {/* Nodes */}
-          {nodes.map((node) => (
-            <g key={node.id} className="cursor-pointer group">
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={node.id === "center" ? 6 : 4}
-                className={
-                  node.id === "center"
-                    ? "fill-primary"
-                    : "fill-snap-bg-panel stroke-primary stroke-[0.3]"
-                }
-              />
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={node.id === "center" ? 8 : 5}
-                className="fill-transparent stroke-primary/30 stroke-[0.2] opacity-0 group-hover:opacity-100 transition-opacity"
-              />
-              <text
-                x={node.x}
-                y={node.y + (node.id === "center" ? 10 : 7)}
-                textAnchor="middle"
-                className="fill-snap-text-secondary text-[2.5px] font-medium"
-              >
-                {node.label}
-              </text>
-            </g>
+                <ul className="space-y-2">
+                  {branch.subtopics.map((sub, j) => (
+                    <li key={j} className="flex items-center gap-2 text-snap-text-secondary text-sm">
+                      <ArrowRight size={14} className="text-snap-text-muted shrink-0" />
+                      <span>{sub}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
           ))}
-        </svg>
+        </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-6 text-[12px] text-snap-text-muted">
-        <span>Click and drag nodes to rearrange</span>
-        <span>•</span>
-        <span>Scroll to zoom</span>
+      <div className="mt-8 p-4 rounded-xl bg-snap-bg-panel/60 border border-white/5 text-center">
+        <p className="text-[12px] text-snap-text-muted">
+          Visual mind map representation of core topics and their relationships.
+        </p>
       </div>
     </div>
   );

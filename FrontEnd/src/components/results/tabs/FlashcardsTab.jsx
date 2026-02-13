@@ -1,36 +1,25 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/ThreedCard";
 
-const flashcards = [
-  {
-    id: 1,
-    question: "What is Machine Learning?",
-    answer: "A subset of AI that enables systems to learn and improve from experience without being explicitly programmed.",
-  },
-  {
-    id: 2,
-    question: "What are the three main types of Machine Learning?",
-    answer: "Supervised Learning, Unsupervised Learning, and Reinforcement Learning.",
-  },
-  {
-    id: 3,
-    question: "What is the difference between training data and test data?",
-    answer: "Training data is used to teach the model, while test data is used to evaluate how well the model performs on unseen examples.",
-  },
-  {
-    id: 4,
-    question: "What is overfitting?",
-    answer: "When a model learns the training data too well, including noise and outliers, causing poor performance on new data.",
-  },
-];
-
 const FlashcardsTab = () => {
+  const { currentSnapNote } = useSelector((state) => state.snapNotes);
+  const flashcards = currentSnapNote?.flashcards || [];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+
+  if (flashcards.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-snap-text-muted">No flashcards available for this note.</p>
+      </div>
+    );
+  }
 
   const currentCard = flashcards[currentIndex];
 
@@ -82,7 +71,7 @@ const FlashcardsTab = () => {
               style={{
                 backfaceVisibility: "hidden",
                 transform: "translateZ(1px)",
-                transformStyle: "preserve-3d", /* REQUIRED FOR CHILDREN PARALLAX */
+                transformStyle: "preserve-3d",
                 WebkitBackfaceVisibility: "hidden"
               }}
             >
@@ -90,7 +79,7 @@ const FlashcardsTab = () => {
                 Question
               </CardItem>
               <CardItem translateZ="100" as="h3" className="text-2xl md:text-3xl font-bold text-snap-text-primary px-4">
-                {currentCard.question}
+                {currentCard.front}
               </CardItem>
               <CardItem translateZ="60" className="text-[12px] text-snap-text-muted mt-6 flex items-center gap-2 opacity-60">
                 <RotateCcw className="w-3 h-3" /> Click to reveal answer
@@ -103,7 +92,7 @@ const FlashcardsTab = () => {
               style={{
                 backfaceVisibility: "hidden",
                 transform: "rotateY(180deg) translateZ(1px)",
-                transformStyle: "preserve-3d", /* REQUIRED FOR CHILDREN PARALLAX */
+                transformStyle: "preserve-3d",
                 WebkitBackfaceVisibility: "hidden"
               }}
             >
@@ -111,7 +100,7 @@ const FlashcardsTab = () => {
                 Answer
               </CardItem>
               <CardItem translateZ="100" as="p" className="text-lg md:text-xl text-snap-text-primary leading-relaxed px-4">
-                {currentCard.answer}
+                {currentCard.back}
               </CardItem>
             </div>
           </motion.div>

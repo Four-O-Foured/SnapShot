@@ -2,11 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import api from '../api/axios';
 import { showToast } from '../lib/toast';
 import { useDispatch } from 'react-redux';
-import { setCurrentSnapNote } from '../store/slices/snapNotesSlice';
+import { addSnapNote, setCurrentSnapNote } from '../store/slices/snapNotesSlice';
+import { useNavigate } from '@tanstack/react-router';
 
 
 export const useCreateSnapNote = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     return useMutation({
         mutationFn: async (data) => {
@@ -25,10 +27,15 @@ export const useCreateSnapNote = () => {
         },
         onSuccess: (data) => {
             showToast.success('SnapNote created successfully!');
-            // Invalidate queries if we had a list of notes
-            // queryClient.invalidateQueries({ queryKey: ['snapNotes'] }); 
             console.log(data);
-            dispatch(setCurrentSnapNote(data));
+
+            // Update Redux state
+            dispatch(addSnapNote(data.snapNotes));
+            dispatch(setCurrentSnapNote(data.snapNotes));
+
+            // Navigate to results
+            navigate({ to: `/dashboard/snapnotes/${data.snapNotes._id}`});
+
             return data;
         },
         onError: (error) => {

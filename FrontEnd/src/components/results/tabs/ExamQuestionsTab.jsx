@@ -1,27 +1,13 @@
 import { useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 
-const examQuestions = [
-  {
-    id: 1,
-    question: "Explain the difference between supervised and unsupervised learning.",
-    answer: "Supervised learning uses labeled data where the correct output is known, allowing the model to learn the mapping from inputs to outputs. Unsupervised learning works with unlabeled data, where the model must find patterns and structures on its own, such as clustering similar data points together.",
-  },
-  {
-    id: 2,
-    question: "What is the bias-variance tradeoff in machine learning?",
-    answer: "The bias-variance tradeoff is a fundamental concept where increasing model complexity reduces bias (underfitting) but increases variance (overfitting), and vice versa. The goal is to find the optimal balance that minimizes total error on unseen data.",
-  },
-  {
-    id: 3,
-    question: "Describe the process of cross-validation and its importance.",
-    answer: "Cross-validation is a technique where the dataset is divided into k folds, and the model is trained k times, each time using a different fold as the validation set. This provides a more robust estimate of model performance and helps detect overfitting.",
-  },
-];
-
 const ExamQuestionsTab = () => {
+  const { currentSnapNote } = useSelector((state) => state.snapNotes);
+  const examQuestions = currentSnapNote?.exam_questions || [];
+
   const [openId, setOpenId] = useState(null);
   const [readIds, setReadIds] = useState(new Set());
 
@@ -54,6 +40,14 @@ const ExamQuestionsTab = () => {
     },
   };
 
+  if (examQuestions.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-snap-text-muted">No exam questions available for this note.</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="space-y-4"
@@ -61,33 +55,33 @@ const ExamQuestionsTab = () => {
       initial="hidden"
       animate="visible"
     >
-      {examQuestions.map((item) => (
+      {examQuestions.map((item, index) => (
         <motion.div
-          key={item.id}
+          key={index}
           className={cn(
             "glass-card overflow-hidden transition-all duration-300 cursor-pointer",
-            openId === item.id && "border-primary/30 ring-1 ring-primary/20"
+            openId === index && "border-primary/30 ring-1 ring-primary/20"
           )}
           variants={itemVariants}
           whileHover={{ scale: 1.01 }}
         >
           <button
-            onClick={() => toggleQuestion(item.id)}
+            onClick={() => toggleQuestion(index)}
             className="w-full p-6 flex items-center justify-between gap-4 text-left hover:bg-snap-bg-panel/30 transition-colors"
           >
             <div className="flex items-center gap-4">
               <motion.span
                 className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary font-semibold text-small"
-                animate={{ scale: openId === item.id ? 1.1 : 1 }}
+                animate={{ scale: openId === index ? 1.1 : 1 }}
                 transition={{ duration: 0.2 }}
               >
-                {item.id}
+                {index + 1}
               </motion.span>
               <span className="text-body text-snap-text-primary font-medium">{item.question}</span>
             </div>
             <div className="flex items-center gap-3">
               <AnimatePresence mode="wait">
-                {readIds.has(item.id) && (
+                {readIds.has(index) && (
                   <motion.span
                     className="flex items-center gap-1 text-[12px] text-snap-mint"
                     initial={{ opacity: 0, x: -10 }}
@@ -101,7 +95,7 @@ const ExamQuestionsTab = () => {
                 )}
               </AnimatePresence>
               <motion.div
-                animate={{ rotate: openId === item.id ? 180 : 0 }}
+                animate={{ rotate: openId === index ? 180 : 0 }}
                 transition={{ duration: 0.3 }}
               >
                 <ChevronDown className="w-5 h-5 text-snap-text-muted" />
@@ -110,7 +104,7 @@ const ExamQuestionsTab = () => {
           </button>
 
           <AnimatePresence>
-            {openId === item.id && (
+            {openId === index && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
