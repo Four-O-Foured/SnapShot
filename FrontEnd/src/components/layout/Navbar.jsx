@@ -1,7 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { Button } from '../ui/Button.jsx'
+import { useSelector } from 'react-redux';
+import { useAuthActions } from '../../hooks/useAuth.js';
 
 const Navbar = () => {
+    const {isAuthenticated} = useSelector((state) => state.auth);
+    const {logout } = useAuthActions();
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-snap-bg-main/80 backdrop-blur-xl border-b border-border/50">
             <div className="container px-6">
@@ -28,13 +32,16 @@ const Navbar = () => {
                     </div>
 
                     {/* CTA Buttons */}
-                    <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="sm" className="text-snap-text-secondary">
-                            <Link to="/auth">Sign In</Link>
-                        </Button>
-                        <Button variant="gradient" size="sm" asChild>
-                            <Link to="/dashboard">Try Free</Link>
-                        </Button>
+                    <div className="flex">
+                        {isAuthenticated ? (
+                            <Button variant="ghost" onClick={() => logout.mutate()} size="sm" className="text-snap-text-secondary">
+                              Logout
+                            </Button>
+                        ) : (
+                            <Button variant="gradient" size="sm" >
+                                <Link to="/auth">Sign In</Link>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>

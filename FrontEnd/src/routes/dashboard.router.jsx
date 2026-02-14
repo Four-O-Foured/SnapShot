@@ -1,21 +1,28 @@
-import { createRoute, Outlet } from "@tanstack/react-router";
+import { createRoute, Outlet, redirect } from "@tanstack/react-router";
 import { rootRoute } from "./router.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
 import SnapNotePage from "../pages/SnapNotePage.jsx";
 import SnapNoteDetailsPage from "../pages/SnapNoteDetailsPage.jsx";
 import BubbleMenu from "@/components/layout/BubbleMenu";
 import { navItems } from "../lib/utils";
+import { store } from "../store/store";
 
 // 1. The Parent (Layout) Route
 // This defines the shared structure (Navbar/Sidebar) for all /dashboard/* pages
 export const dashboardRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/dashboard',
+    beforeLoad: () => {
+        const { isAuthenticated, loading } = store.getState().auth;
+        if (!isAuthenticated && !loading) {
+            throw redirect({ to: '/auth' });
+        }
+    },
     component: () => (
         <div className="min-h-screen bg-snap-bg-main pt-20 sm:pt-12 md:-mt-18 overflow-x-hidden relative">
             <BubbleMenu
                 items={navItems}
-                logo=""
+                logo="snap"
                 useFixedPosition={true}
                 className="px-6 md:px-12"
             />

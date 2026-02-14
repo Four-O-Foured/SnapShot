@@ -1,12 +1,13 @@
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthActions } from '../../hooks/useAuth';
 
 const LoginForm = ({ onToggle }) => {
-    const { login } = useAuth();
-    
+    const { login } = useAuthActions();
+
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -18,6 +19,7 @@ const LoginForm = ({ onToggle }) => {
 
     const onSubmit = (data) => {
         login.mutate(data);
+        reset();
     };
 
     return (

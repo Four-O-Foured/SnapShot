@@ -7,7 +7,7 @@ const CleanNotesTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
   const [copiedId, setCopiedId] = useState(null);
 
-  const notes = currentSnapNote?.clean_notes || [];
+  const notes = currentSnapNote?.snapNotes?.clean_notes || [];
 
   const handleCopy = (id, content) => {
     navigator.clipboard.writeText(content);

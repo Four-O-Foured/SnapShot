@@ -87,6 +87,3 @@ SnapNotes is a modern, AI-powered note-taking application designed to streamline
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
-
-This project is licensed under the ISC License.

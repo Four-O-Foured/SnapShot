@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const ExamQuestionsTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
-  const examQuestions = currentSnapNote?.exam_questions || [];
+  const examQuestions = currentSnapNote?.snapNotes?.exam_questions || [];
 
   const [openId, setOpenId] = useState(null);
   const [readIds, setReadIds] = useState(new Set());
@@ -111,7 +111,7 @@ const ExamQuestionsTab = () => {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="p-6 pt-0 border-t border-border/50">
+                <div className="p-6 border-t border-border/50">
                   <motion.div
                     className="p-4 rounded-xl bg-snap-bg-panel"
                     initial={{ opacity: 0, y: -10 }}

@@ -4,7 +4,7 @@ import { Network, ArrowRight } from "lucide-react";
 
 const MindMapTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
-  const mindMap = currentSnapNote?.mind_map;
+  const mindMap = currentSnapNote?.snapNotes?.mind_map;
 
   if (!mindMap) {
     return (

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 export default function BubbleMenu({
     logo,
@@ -14,8 +14,6 @@ export default function BubbleMenu({
     menuContentColor = 'hsl(var(--snap-text-primary))',
     useFixedPosition = false,
     items,
-    animationEase = 'back.out(1.5)',
-    animationDuration = 0.5,
     staggerDelay = 0.12
 }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +21,7 @@ export default function BubbleMenu({
     const [isDesktop, setIsDesktop] = useState(false);
 
     useEffect(() => {
-        const handleResize = () => setIsDesktop(window.innerWidth >= 1024); // Adjusted for standard breakpoint
+        const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
         handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -183,7 +181,14 @@ export default function BubbleMenu({
                 >
                     <span className="logo-content flex items-center justify-center w-[100px] md:w-[120px] h-full">
                         {typeof logo === 'string' ? (
-                            <img src={logo} alt="Logo" className="max-h-[50%] md:max-h-[55%] max-w-full object-contain" />
+                            <MotionLink
+                                to="/"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="inline-flex items-center justify-center"
+                            >
+                                <img src={logo} alt="Logo" className="max-h-[50%] md:max-h-[55%] max-w-full object-contain" />
+                            </MotionLink>
                         ) : (
                             logo
                         )}
@@ -237,7 +242,7 @@ export default function BubbleMenu({
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
-                        className="bubble-menu-items fixed inset-0 flex items-center justify-center z-[1000] pointer-events-none overflow-y-auto"
+                        className="bubble-menu-items fixed inset-0 flex items-center justify-center z-1000 pointer-events-none overflow-y-auto"
                         initial="hidden"
                         animate="visible"
                         exit="hidden"
@@ -252,56 +257,58 @@ export default function BubbleMenu({
                             style={{ pointerEvents: 'auto' }}
                         />
 
-                        <motion.ul
-                            className="pill-list relative z-10 list-none m-0 px-4 md:px-6 w-full max-w-[1400px] mx-auto flex flex-wrap gap-y-4 md:gap-y-16 pointer-events-auto justify-center"
-                            role="menu"
-                        >
-                            {menuItems.map((item, idx) => (
-                                <li
-                                    key={idx}
-                                    className="pill-col flex justify-center items-stretch flex-[0_0_50%] md:flex-[0_0_calc(100%/3)] px-2 md:px-4"
-                                >
-                                    <MotionLink
-                                        role="menuitem"
-                                        to={item.to || item.href}
-                                        aria-label={item.ariaLabel || item.label}
-                                        variants={bubbleVariants}
-                                        onClick={handleClose}
-                                        className="pill-link glass-pill w-full rounded-full no-underline text-inherit flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 relative transition-all duration-300 ease-out box-border whitespace-nowrap overflow-hidden"
-                                        style={{
-                                            '--item-rot': `${isDesktop ? (item.rotation ?? 0) : 0}deg`,
-                                            '--item-offset': `${isDesktop ? (item.offset ?? 0) : 0}px`,
-                                            '--hover-bg': item.hoverStyles?.bgColor || 'hsl(var(--primary))',
-                                            '--hover-color': item.hoverStyles?.textColor || '#ffffff',
-                                            '--glow-color': item.hoverStyles?.glowColor || 'hsla(var(--primary), 0.3)',
-                                            background: 'var(--pill-bg)',
-                                            color: menuContentColor,
-                                            padding: isDesktop ? 'clamp(2rem, 4vw, 6rem) 0' : '1.25rem 0.5rem',
-                                            minHeight: isDesktop ? '150px' : '64px'
-                                        }}
+                        {menuItems && (
+                            <motion.ul
+                                className="pill-list relative z-10 list-none m-0 px-4 md:px-6 w-full max-w-[1400px] mx-auto flex flex-wrap gap-y-4 md:gap-y-16 pointer-events-auto justify-center"
+                                role="menu"
+                            >
+                                {menuItems.map((item, idx) => (
+                                    <li
+                                        key={idx}
+                                        className="pill-col flex justify-center items-stretch flex-[0_0_50%] md:flex-[0_0_calc(100%/3)] px-2 md:px-4"
                                     >
-                                        {item.icon && (
+                                        <MotionLink
+                                            role="menuitem"
+                                            to={item.to || item.href}
+                                            aria-label={item.ariaLabel || item.label}
+                                            variants={bubbleVariants}
+                                            onClick={handleClose}
+                                            className="pill-link glass-pill w-full rounded-full no-underline text-inherit flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 relative transition-all duration-300 ease-out box-border whitespace-nowrap overflow-hidden"
+                                            style={{
+                                                '--item-rot': `${isDesktop ? (item.rotation ?? 0) : 0}deg`,
+                                                '--item-offset': `${isDesktop ? (item.offset ?? 0) : 0}px`,
+                                                '--hover-bg': item.hoverStyles?.bgColor || 'hsl(var(--primary))',
+                                                '--hover-color': item.hoverStyles?.textColor || '#ffffff',
+                                                '--glow-color': item.hoverStyles?.glowColor || 'hsla(var(--primary), 0.3)',
+                                                background: 'var(--pill-bg)',
+                                                color: menuContentColor,
+                                                padding: isDesktop ? 'clamp(2rem, 4vw, 6rem) 0' : '1.25rem 0.5rem',
+                                                minHeight: isDesktop ? '150px' : '64px'
+                                            }}
+                                        >
+                                            {item.icon && (
+                                                <motion.span
+                                                    className="flex items-center justify-center opacity-90"
+                                                    variants={labelVariants}
+                                                >
+                                                    <item.icon size={isDesktop ? 44 : 22} strokeWidth={1.5} />
+                                                </motion.span>
+                                            )}
                                             <motion.span
-                                                className="flex items-center justify-center opacity-90"
+                                                className="pill-label inline-block font-sans font-bold tracking-tight uppercase"
+                                                style={{
+                                                    fontSize: isDesktop ? 'clamp(1rem, 2.4vw, 2.4rem)' : '0.75rem',
+                                                    marginTop: !isDesktop && item.icon ? '2px' : '0'
+                                                }}
                                                 variants={labelVariants}
                                             >
-                                                <item.icon size={isDesktop ? 44 : 22} strokeWidth={1.5} />
+                                                {item.label}
                                             </motion.span>
-                                        )}
-                                        <motion.span
-                                            className="pill-label inline-block font-sans font-bold tracking-tight uppercase"
-                                            style={{
-                                                fontSize: isDesktop ? 'clamp(1rem, 2.4vw, 2.4rem)' : '0.75rem',
-                                                marginTop: !isDesktop && item.icon ? '2px' : '0'
-                                            }}
-                                            variants={labelVariants}
-                                        >
-                                            {item.label}
-                                        </motion.span>
-                                    </MotionLink>
-                                </li>
-                            ))}
-                        </motion.ul>
+                                        </MotionLink>
+                                    </li>
+                                ))}
+                            </motion.ul>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>

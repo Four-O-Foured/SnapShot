@@ -15,6 +15,5 @@ export const authMiddleware = asyncHandler(async (req, res, next) => {
         throw new ApiError(401, "Unauthorized");
     }
     req.user = user;
-    console.log(req.user);
     next();
 });

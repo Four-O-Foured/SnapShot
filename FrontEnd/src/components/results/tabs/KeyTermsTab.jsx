@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 const KeyTermsTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
-  const rawTerms = currentSnapNote?.key_terms || [];
+  const rawTerms = currentSnapNote?.snapNotes?.key_terms || [];
 
   const keyTerms = rawTerms.map(item => {
     const parts = item.split(': ');

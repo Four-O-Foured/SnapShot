@@ -4,7 +4,7 @@ const DeepExplanationTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
 
   const title = currentSnapNote?.lesson_title || "Deep Explanation";
-  const explanations = currentSnapNote?.step_by_step_explanation || [];
+  const explanations = currentSnapNote?.snapNotes?.step_by_step_explanation || [];
 
   if (explanations.length === 0) {
     return (

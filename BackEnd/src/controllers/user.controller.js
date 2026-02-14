@@ -23,3 +23,17 @@ export const loginUser = asyncHandler(async (req, res) => {
     res.cookie("accessToken", accessToken, cookieOptions);
     res.json({ message: "User logged in successfully", user, accessToken });
 });
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    if (req.user) {
+        res.json({ user: req.user, message: "Authorized" });
+    }
+    else {
+        throw new ApiError(401, "Unauthorized");
+    }
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+    res.clearCookie("accessToken");
+    res.json({ message: "Logged out successfully" });
+});

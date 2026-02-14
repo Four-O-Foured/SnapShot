@@ -4,26 +4,23 @@ import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import ResultsTabs from "../components/results/ResultsTabs";
 import { setCurrentSnapNote } from "../store/slices/snapNotesSlice";
-import { useState } from "react";
 
 const SnapNoteDetailsPage = () => {
-    const {CurrentSnapNote} = useSelector((state) => state.snapNotes);
-    console.log(CurrentSnapNote);
-    const [selectedNote, setSelectedNote] = useState(null);
-    if (!CurrentSnapNote) {
-        const { noteId } = useParams({ from: '/dashboard/snapnotes/$noteId' });
-        const dispatch = useDispatch();
-        const { snapNotes } = useSelector((state) => state.snapNotes);
+    const { noteId } = useParams({ from: '/dashboard/snapnotes/$noteId' });
+    const dispatch = useDispatch();
 
-        // Find the specific note
-        setSelectedNote(snapNotes.find(note => (note._id || note.id) == noteId));
+    // Select state with standard casing
+    const { snapNotes, currentSnapNote } = useSelector((state) => state.snapNotes);
 
-        useEffect(() => {
-            if (selectedNote) {
-                dispatch(setCurrentSnapNote(selectedNote));
-            }
-        }, [selectedNote]);
-    }
+    // Find the specific note from the full list based on the URL parameter
+    const selectedNote = snapNotes.find(note => (note._id || note.id) == noteId);
+
+    // Sync currentSnapNote if needed (e.g. on direct navigation/refresh)
+    useEffect(() => {
+        if (selectedNote && (!currentSnapNote || (currentSnapNote._id || currentSnapNote.id) !== noteId)) {
+            dispatch(setCurrentSnapNote(selectedNote));
+        }
+    }, [selectedNote, currentSnapNote, dispatch, noteId]);
 
     if (!selectedNote) {
         return (
@@ -43,7 +40,7 @@ const SnapNoteDetailsPage = () => {
         >
             <div className="text-center space-y-2">
                 <h1 className="text-3xl md:text-5xl font-bold text-snap-text-primary tracking-tight">
-                    {selectedNote.topic || "Study Insights"}
+                    {selectedNote.lesson_title || selectedNote.topic || "Study Insights"}
                 </h1>
                 <p className="text-snap-text-secondary">
                     Detailed AI analysis and study materials for this topic.

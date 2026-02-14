@@ -8,7 +8,7 @@ import { CardContainer, CardBody, CardItem } from "@/components/ui/ThreedCard";
 
 const FlashcardsTab = () => {
   const { currentSnapNote } = useSelector((state) => state.snapNotes);
-  const flashcards = currentSnapNote?.flashcards || [];
+  const flashcards = currentSnapNote?.snapNotes?.flashcards || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);

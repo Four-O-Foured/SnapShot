@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Sparkles, Calendar, BookOpen, ChevronRight, Search } from "lucide-react";
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 const MySnapNotes = () => {
     const { snapNotes } = useSelector((state) => state.snapNotes);
@@ -91,10 +91,10 @@ const MySnapNotes = () => {
 
                             {/* Header Image */}
                             <div className="relative h-48 overflow-hidden bg-snap-bg-panel/60">
-                                {note.imageUrl ? (
+                                {note.image ? (
                                     <img
-                                        src={note.imageUrl}
-                                        alt={note.topic || "Study Note"}
+                                        src={note.image}
+                                        alt={note.snapNotes.lesson_title || "Study Note"}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                     />
                                 ) : (
@@ -119,11 +119,11 @@ const MySnapNotes = () => {
                                 </div>
 
                                 <h3 className="text-xl font-bold text-snap-text-primary mb-3 leading-tight group-hover:text-snap-cyan transition-colors">
-                                    {note.topic || "Untitled Topic"}
+                                    {note.snapNotes.lesson_title || "Untitled Topic"}
                                 </h3>
 
                                 <p className="text-snap-text-secondary text-sm leading-relaxed mb-6">
-                                    {note.snapNotes || note.summary || "No summary available for this note. Please try regenerating the content to get AI-powered insights."}
+                                    {note.snapNotes.clean_notes.map((note, index) => index < 4 ? note.summary : null).join(" ") || "No summary available for this note. Please try regenerating the content to get AI-powered insights."}
                                 </p>
 
                                 <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">

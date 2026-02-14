@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthActions } from '../../hooks/useAuth';
 
 const RegisterForm = ({ onToggle }) => {
-    const { register: registerUser } = useAuth();
+    const { register: registerUser } = useAuthActions();
     const {
         register,
         handleSubmit,

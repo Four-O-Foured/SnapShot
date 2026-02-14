@@ -4,7 +4,8 @@ import { landingRoute } from './landingPage.router.jsx';
 import { dashboardRoute, dashboardIndexRoute, snapNotesRoute, snapNoteDetailsRoute } from './dashboard.router.jsx';
 import { authRoute } from './auth.router.jsx';
 
-// Root route - This is the layout wrapper for all routes
+// Root route - layout wrapper for all routes
+// Do NOT define context here -- it comes from RouterProvider in main.jsx
 export const rootRoute = createRootRoute({
     component: App,
 });
@@ -21,4 +22,10 @@ export const routeTree = rootRoute.addChildren([
 ]);
 
 // Create the router instance
-export const router = createRouter({ routeTree });
+// context here is the INITIAL default -- RouterProvider overrides it dynamically
+export const router = createRouter({
+    routeTree,
+    context: {
+        auth: undefined,
+    },
+});
